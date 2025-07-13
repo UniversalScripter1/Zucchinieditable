@@ -1,14 +1,14 @@
 debugX = true
 
--- 🛠️ Customizable notification settings
+-- 🛠️ Executor Notification Settings
 local notifySettings = {
     Title = "Executor Detected",
     Duration = 5,
-    Image = "rbxassetid://9790253015", -- <- Replace this with your own decal ID
+    Image = "rbxassetid://9790253015", -- Replace with your own decal ID
     TextPrefix = "You're using: "
 }
 
--- 🔍 Executor detection function
+-- 🔍 Executor Detection
 local function detectExecutor()
     local name = "Unknown"
 
@@ -47,11 +47,8 @@ local function detectExecutor()
     return name
 end
 
-wait (3)
-
--- 🌟 Show notification with your decal
+-- 🔔 Show notification
 local execName = detectExecutor()
-
 pcall(function()
     game.StarterGui:SetCore("SendNotification", {
         Title = notifySettings.Title,
@@ -63,16 +60,14 @@ end)
 
 wait(1)
 
-
-debugX = true
-
+-- 🧩 Load Rayfield
 local Rayfield = loadstring(game:HttpGet('https://sirius.menu/rayfield'))()
 
 local Window = Rayfield:CreateWindow({
    Name = "Zucchini Hub",
    Icon = 0,
-   LoadingTitle = "Universal script",
-   LoadingSubtitle = "Gino",
+   LoadingTitle = "Universal Duper",
+   LoadingSubtitle = "by Gino",
    Theme = "Default",
 
    DisableRayfieldPrompts = false,
@@ -102,15 +97,38 @@ local Window = Rayfield:CreateWindow({
    }
 })
 
--- Tab 1: Replica
+-- 🧪 Tab 1: Replica
 local Tab = Window:CreateTab("Replica", 96265482350413)
 local Section = Tab:CreateSection("Dupe Section")
 
+-- 🔁 Color-Cycling Label
+local WarningLabel = Tab:CreateLabel("🟥 Make sure to UNFAVORITE what you want to dupe!")
+
+-- 🔁 Animate label text with colors
+local warningMessages = {
+    "🟥 Make sure to UNFAVORITE what you want to dupe!",
+    "⬜ Make sure to UNFAVORITE what you want to dupe!",
+    "🟦 Make sure to UNFAVORITE what you want to dupe!",
+    "🟨 Make sure to UNFAVORITE what you want to dupe!",
+    "🟩 Make sure to UNFAVORITE what you want to dupe!",
+    "⬛ Make sure to UNFAVORITE what you want to dupe!"
+}
+
+task.spawn(function()
+    while true do
+        for _, msg in ipairs(warningMessages) do
+            WarningLabel:Set(msg)
+            task.wait(1)
+        end
+    end
+end)
+
+-- Other Labels
 local InfoLabel = Tab:CreateLabel("Must wait 1 hour to duplicate")
 local TimerLabel = Tab:CreateLabel("")
 local ToolNameLabel = Tab:CreateLabel("Currently holding: None")
 
--- Tool monitoring
+-- 🔄 Live tool check
 task.spawn(function()
    local player = game.Players.LocalPlayer
    while task.wait(0.5) do
@@ -123,10 +141,10 @@ task.spawn(function()
    end
 end)
 
--- Timer logic
+-- ⏲ Timer
 local timerRunning = false
 
-local Button = Tab:CreateButton({
+Tab:CreateButton({
    Name = "Dupe",
    Callback = function()
       if timerRunning then
@@ -160,9 +178,8 @@ local Button = Tab:CreateButton({
    end,
 })
 
--- Tab 2: Script Tools
+-- ⚙️ Tab 2: Script Tools
 local ScriptsTab = Window:CreateTab("Script Tools", 9405930424)
-
 ScriptsTab:CreateLabel("While waiting, you can execute scripts here:")
 
 ScriptsTab:CreateButton({
@@ -186,5 +203,212 @@ ScriptsTab:CreateButton({
    end,
 })
 
--- Load configuration
+-- Save GUI
+Rayfield:LoadConfiguration()
+debugX = true
+
+-- 🛠️ Executor Notification Settings
+local notifySettings = {
+    Title = "Executor Detected",
+    Duration = 5,
+    Image = "rbxassetid://9790253015", -- Replace with your own decal ID
+    TextPrefix = "You're using: "
+}
+
+-- 🔍 Executor Detection
+local function detectExecutor()
+    local name = "Unknown"
+
+    if identifyexecutor then
+        local success, exec = pcall(identifyexecutor)
+        if success and exec then
+            name = exec
+        end
+    elseif getexecutorname then
+        local success, exec = pcall(getexecutorname)
+        if success and exec then
+            name = exec
+        end
+    elseif getgenv().isdelta or getgenv().delta then
+        name = "Delta"
+    elseif is_sirhurt_closure then
+        name = "SirHurt"
+    elseif pebc_execute then
+        name = "ProtoSmasher"
+    elseif KRNL_LOADED then
+        name = "KRNL"
+    elseif syn and syn.protect_gui then
+        name = "Synapse X"
+    elseif fluxus then
+        name = "Fluxus"
+    elseif isexecutorclosure then
+        name = "Script-Ware"
+    elseif getgenv().is_comet then
+        name = "Comet"
+    elseif getgenv().Valyse then
+        name = "Valyse"
+    elseif getgenv().dx9ware then
+        name = "DX9Ware"
+    end
+
+    return name
+end
+
+-- 🔔 Show notification
+local execName = detectExecutor()
+pcall(function()
+    game.StarterGui:SetCore("SendNotification", {
+        Title = notifySettings.Title,
+        Text = notifySettings.TextPrefix .. execName,
+        Duration = notifySettings.Duration,
+        Icon = notifySettings.Image
+    })
+end)
+
+wait(1)
+
+-- 🧩 Load Rayfield
+local Rayfield = loadstring(game:HttpGet('https://sirius.menu/rayfield'))()
+
+local Window = Rayfield:CreateWindow({
+   Name = "Zucchini Hub",
+   Icon = 0,
+   LoadingTitle = "Universal Duper",
+   LoadingSubtitle = "by Gino",
+   Theme = "Default",
+
+   DisableRayfieldPrompts = false,
+   DisableBuildWarnings = false,
+
+   ConfigurationSaving = {
+      Enabled = true,
+      FolderName = nil,
+      FileName = "Big Hub"
+   },
+
+   Discord = {
+      Enabled = false,
+      Invite = "noinvitelink",
+      RememberJoins = true
+   },
+
+   KeySystem = false,
+   KeySettings = {
+      Title = "Untitled",
+      Subtitle = "Key System",
+      Note = "No method of obtaining the key is provided",
+      FileName = "Key",
+      SaveKey = true,
+      GrabKeyFromSite = false,
+      Key = {"Hello"}
+   }
+})
+
+-- 🧪 Tab 1: Replica
+local Tab = Window:CreateTab("Replica", 96265482350413)
+local Section = Tab:CreateSection("Dupe Section")
+
+-- 🔁 Color-Cycling Label
+local WarningLabel = Tab:CreateLabel("🟥 Make sure to UNFAVORITE what you want to dupe!")
+
+-- 🔁 Animate label text with colors
+local warningMessages = {
+    "🟥 Make sure to UNFAVORITE what you want to dupe!",
+    "⬜ Make sure to UNFAVORITE what you want to dupe!",
+    "🟦 Make sure to UNFAVORITE what you want to dupe!",
+    "🟨 Make sure to UNFAVORITE what you want to dupe!",
+    "🟩 Make sure to UNFAVORITE what you want to dupe!",
+    "⬛ Make sure to UNFAVORITE what you want to dupe!"
+}
+
+task.spawn(function()
+    while true do
+        for _, msg in ipairs(warningMessages) do
+            WarningLabel:Set(msg)
+            task.wait(1)
+        end
+    end
+end)
+
+-- Other Labels
+local InfoLabel = Tab:CreateLabel("Must wait 1 hour to duplicate")
+local TimerLabel = Tab:CreateLabel("")
+local ToolNameLabel = Tab:CreateLabel("Currently holding: None")
+
+-- 🔄 Live tool check
+task.spawn(function()
+   local player = game.Players.LocalPlayer
+   while task.wait(0.5) do
+      local tool = player.Character and player.Character:FindFirstChildOfClass("Tool")
+      if tool then
+         ToolNameLabel:Set("Currently holding: " .. tool.Name)
+      else
+         ToolNameLabel:Set("Currently holding: None")
+      end
+   end
+end)
+
+-- ⏲ Timer
+local timerRunning = false
+
+Tab:CreateButton({
+   Name = "Dupe",
+   Callback = function()
+      if timerRunning then
+         Rayfield:Notify({
+            Title = "Cooldown Active",
+            Content = "You need to wait for 1 hour!",
+            Duration = 5
+         })
+         return
+      end
+
+      timerRunning = true
+      local totalSeconds = 3600 -- 1 hour
+
+      Rayfield:Notify({
+         Title = "Timer Started",
+         Content = "You must wait 1 hour.",
+         Duration = 4
+      })
+
+      task.spawn(function()
+         for i = totalSeconds, 0, -1 do
+            local minutes = math.floor(i / 60)
+            local seconds = i % 60
+            TimerLabel:Set("Time remaining: " .. string.format("%02d:%02d", minutes, seconds))
+            task.wait(1)
+         end
+
+         game.Players.LocalPlayer:Kick("If it didn't dupe try again")
+      end)
+   end,
+})
+
+-- ⚙️ Tab 2: Script Tools
+local ScriptsTab = Window:CreateTab("Script Tools", 9405930424)
+ScriptsTab:CreateLabel("While waiting, you can execute scripts here:")
+
+ScriptsTab:CreateButton({
+   Name = "Infinite Yield",
+   Callback = function()
+      loadstring(game:HttpGet('https://raw.githubusercontent.com/EdgeIY/infiniteyield/master/source'))()
+   end,
+})
+
+ScriptsTab:CreateButton({
+   Name = "Speed X Hub (Key)",
+   Callback = function()
+      loadstring(game:HttpGet("https://raw.githubusercontent.com/AhmadV99/Speed-Hub-X/main/Speed%20Hub%20X.lua", true))()
+   end,
+})
+
+ScriptsTab:CreateButton({
+   Name = "No Lag Hub",
+   Callback = function()
+      loadstring(game:HttpGetAsync("https://raw.githubusercontent.com/NoLag-id/No-Lag-HUB/refs/heads/main/Loader/LoaderV2.lua"))()
+   end,
+})
+
+-- Save GUI
 Rayfield:LoadConfiguration()
