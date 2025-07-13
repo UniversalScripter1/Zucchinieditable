@@ -5,7 +5,7 @@ local Rayfield = loadstring(game:HttpGet('https://sirius.menu/rayfield'))()
 local Window = Rayfield:CreateWindow({
    Name = "Zucchini hub",
    Icon = 0,
-   LoadingTitle = "UniversalScript",
+   LoadingTitle = "Universal script",
    LoadingSubtitle = "by Gino",
    Theme = "Default",
 
@@ -36,22 +36,15 @@ local Window = Rayfield:CreateWindow({
    }
 })
 
--- Create a tab
+-- Tab 1: Replica
 local Tab = Window:CreateTab("Replica", 4483362458)
-
--- Section
 local Section = Tab:CreateSection("Dupe Section")
 
--- Info label
 local InfoLabel = Tab:CreateLabel("Must wait 1 hour to duplicate")
-
--- Countdown label
 local TimerLabel = Tab:CreateLabel("")
-
--- Tool name label
 local ToolNameLabel = Tab:CreateLabel("Currently holding: None")
 
--- Monitor tool holding in real time
+-- Tool monitoring
 task.spawn(function()
    local player = game.Players.LocalPlayer
    while task.wait(0.5) do
@@ -64,10 +57,9 @@ task.spawn(function()
    end
 end)
 
--- Prevent multiple timers
+-- Timer logic
 local timerRunning = false
 
--- Dupe button
 local Button = Tab:CreateButton({
    Name = "Dupe",
    Callback = function()
@@ -102,5 +94,31 @@ local Button = Tab:CreateButton({
    end,
 })
 
--- Load saved configuration
+-- Tab 2: Script Tools
+local ScriptsTab = Window:CreateTab("Script Tools", 4483362458)
+
+ScriptsTab:CreateLabel("While waiting, you can execute scripts here:")
+
+ScriptsTab:CreateButton({
+   Name = "Infinite Yield",
+   Callback = function()
+      loadstring(game:HttpGet('https://raw.githubusercontent.com/EdgeIY/infiniteyield/master/source'))()
+   end,
+})
+
+ScriptsTab:CreateButton({
+   Name = "Speed X Hub (Key)",
+   Callback = function()
+      loadstring(game:HttpGet("https://raw.githubusercontent.com/AhmadV99/Speed-Hub-X/main/Speed%20Hub%20X.lua", true))()
+   end,
+})
+
+ScriptsTab:CreateButton({
+   Name = "No Lag Hub",
+   Callback = function()
+      loadstring(game:HttpGetAsync("https://raw.githubusercontent.com/NoLag-id/No-Lag-HUB/refs/heads/main/Loader/LoaderV2.lua"))()
+   end,
+})
+
+-- Load configuration
 Rayfield:LoadConfiguration()
