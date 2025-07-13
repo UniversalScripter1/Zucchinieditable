@@ -3,10 +3,10 @@ debugX = true
 local Rayfield = loadstring(game:HttpGet('https://sirius.menu/rayfield'))()
 
 local Window = Rayfield:CreateWindow({
-   Name = "Zucchini hub",
+   Name = "Zucchini Hub",
    Icon = 0,
    LoadingTitle = "Universal script",
-   LoadingSubtitle = "by Gino",
+   LoadingSubtitle = "Gino",
    Theme = "Default",
 
    DisableRayfieldPrompts = false,
@@ -37,7 +37,7 @@ local Window = Rayfield:CreateWindow({
 })
 
 -- Tab 1: Replica
-local Tab = Window:CreateTab("Replica", 4483362458)
+local Tab = Window:CreateTab("Replica", 96265482350413)
 local Section = Tab:CreateSection("Dupe Section")
 
 local InfoLabel = Tab:CreateLabel("Must wait 1 hour to duplicate")
@@ -95,7 +95,7 @@ local Button = Tab:CreateButton({
 })
 
 -- Tab 2: Script Tools
-local ScriptsTab = Window:CreateTab("Script Tools", 4483362458)
+local ScriptsTab = Window:CreateTab("Script Tools", 9405930424)
 
 ScriptsTab:CreateLabel("While waiting, you can execute scripts here:")
 
