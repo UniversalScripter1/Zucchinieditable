@@ -1,207 +1,255 @@
-debugX = true
+-- ⚙️ Sound Setup
+local SoundService = game:GetService("SoundService")
+local NotifySound = Instance.new("Sound", SoundService)
+NotifySound.SoundId = "rbxassetid://108941556941066"
+NotifySound.Volume = 1
 
--- 🛠️ Executor Notification Settings
-local notifySettings = {
-    Title = "Executor Detected",
-    Duration = 5,
-    Image = "rbxassetid://9790253015", -- Replace with your own decal ID
-    TextPrefix = "You're using: "
-}
+local ClickSound = Instance.new("Sound", SoundService)
+ClickSound.SoundId = "rbxassetid://6586979979"
+ClickSound.Volume = 1
 
--- 🔍 Executor Detection
+-- ✅ Rayfield Load
+local Rayfield = loadstring(game:HttpGet('https://sirius.menu/rayfield'))()
+local Window = Rayfield:CreateWindow({
+    Name = "Zucchini Hub",
+    Icon = 0,
+    LoadingTitle = "universal Script",
+    LoadingSubtitle = "by Gino",
+    Theme = "Default",
+    ConfigurationSaving = {
+        Enabled = true,
+        FolderName = nil,
+        FileName = "Big Hub"
+    },
+    Discord = {
+        Enabled = false,
+        Invite = "noinvitelink",
+        RememberJoins = true
+    },
+    KeySystem = false
+})
+
+-- ✅ Wrapped Notify with Sound
+local function NotifyWithSound(tbl)
+    pcall(function()
+        NotifySound:Play()
+        Rayfield:Notify({
+            Title = tbl.Title or "Notification",
+            Content = tbl.Content or "Something happened.",
+            Duration = tbl.Duration or 5,
+            Image = tbl.Image or 9790253015
+        })
+    end)
+end
+
+-- ✅ Executor Detection
 local function detectExecutor()
     local name = "Unknown"
-
-    if identifyexecutor then
-        local success, exec = pcall(identifyexecutor)
-        if success and exec then
-            name = exec
-        end
-    elseif getexecutorname then
-        local success, exec = pcall(getexecutorname)
-        if success and exec then
-            name = exec
-        end
-    elseif getgenv().isdelta or getgenv().delta then
-        name = "Delta"
-    elseif is_sirhurt_closure then
-        name = "SirHurt"
-    elseif pebc_execute then
-        name = "ProtoSmasher"
-    elseif KRNL_LOADED then
-        name = "KRNL"
-    elseif syn and syn.protect_gui then
-        name = "Synapse X"
-    elseif fluxus then
-        name = "Fluxus"
-    elseif isexecutorclosure then
-        name = "Script-Ware"
-    elseif getgenv().is_comet then
-        name = "Comet"
-    elseif getgenv().Valyse then
-        name = "Valyse"
-    elseif getgenv().dx9ware then
-        name = "DX9Ware"
-    end
-
+    if identifyexecutor then local s,e = pcall(identifyexecutor) if s and e then name = e end
+    elseif getexecutorname then local s,e = pcall(getexecutorname) if s and e then name = e end
+    elseif getgenv().isdelta or getgenv().delta then name = "Delta"
+    elseif is_sirhurt_closure then name = "SirHurt"
+    elseif pebc_execute then name = "ProtoSmasher"
+    elseif KRNL_LOADED then name = "KRNL"
+    elseif syn and syn.protect_gui then name = "Synapse X"
+    elseif fluxus then name = "Fluxus"
+    elseif isexecutorclosure then name = "Script-Ware"
+    elseif getgenv().is_comet then name = "Comet"
+    elseif getgenv().Valyse then name = "Valyse"
+    elseif getgenv().dx9ware then name = "DX9Ware" end
     return name
 end
 
--- 🔔 Show notification
 local execName = detectExecutor()
-pcall(function()
-    game.StarterGui:SetCore("SendNotification", {
-        Title = notifySettings.Title,
-        Text = notifySettings.TextPrefix .. execName,
-        Duration = notifySettings.Duration,
-        Icon = notifySettings.Image
-    })
-end)
+NotifyWithSound({
+    Title = "Executor Detected",
+    Content = "You're using: " .. execName,
+    Duration = 5
+})
 
 wait(1)
 
--- 🧩 Load Rayfield
-local Rayfield = loadstring(game:HttpGet('https://sirius.menu/rayfield'))()
-
-local Window = Rayfield:CreateWindow({
-   Name = "Zucchini Hub",
-   Icon = 0,
-   LoadingTitle = "Universal Duper",
-   LoadingSubtitle = "by Gino",
-   Theme = "Default",
-
-   DisableRayfieldPrompts = false,
-   DisableBuildWarnings = false,
-
-   ConfigurationSaving = {
-      Enabled = true,
-      FolderName = nil,
-      FileName = "Big Hub"
-   },
-
-   Discord = {
-      Enabled = false,
-      Invite = "noinvitelink",
-      RememberJoins = true
-   },
-
-   KeySystem = false,
-   KeySettings = {
-      Title = "Untitled",
-      Subtitle = "Key System",
-      Note = "No method of obtaining the key is provided",
-      FileName = "Key",
-      SaveKey = true,
-      GrabKeyFromSite = false,
-      Key = {"Hello"}
-   }
-})
-
--- 🧪 Tab 1: Replica
+-- 🧪 Replica Tab Setup
 local Tab = Window:CreateTab("Replica", 96265482350413)
-local Section = Tab:CreateSection("Dupe Section")
+Tab:CreateSection("🎯 Duplication Tools")
 
--- 🔁 Color-Cycling Label
+-- ⬆️ Flashing Label
 local WarningLabel = Tab:CreateLabel("🟥 Make sure to UNFAVORITE what you want to dupe!")
-
--- 🔁 Animate label text with colors
-local warningMessages = {
-    "🟥 Make sure to UNFAVORITE what you want to dupe!",
-    "⬜ Make sure to UNFAVORITE what you want to dupe!",
-    "🟦 Make sure to UNFAVORITE what you want to dupe!",
-    "🟨 Make sure to UNFAVORITE what you want to dupe!",
-    "🟩 Make sure to UNFAVORITE what you want to dupe!",
-    "⬛ Make sure to UNFAVORITE what you want to dupe!"
-}
-
 task.spawn(function()
+    local colors = {
+        "⬛ Make sure to UNFAVORITE what you want to dupe!",
+        "⬜ Make sure to UNFAVORITE what you want to dupe!",
+        "🟥 Make sure to UNFAVORITE what you want to dupe!",
+        "🟦 Make sure to UNFAVORITE what you want to dupe!"
+    }
     while true do
-        for _, msg in ipairs(warningMessages) do
-            WarningLabel:Set(msg)
+        for _, txt in ipairs(colors) do
+            WarningLabel:Set(txt)
             task.wait(1)
         end
     end
 end)
 
--- Other Labels
+-- 📋 Labels
 local InfoLabel = Tab:CreateLabel("Must wait 1 hour to duplicate")
 local TimerLabel = Tab:CreateLabel("")
 local ToolNameLabel = Tab:CreateLabel("Currently holding: None")
 
--- 🔄 Live tool check
+-- 🧲 Live Tool Name
 task.spawn(function()
-   local player = game.Players.LocalPlayer
-   while task.wait(0.5) do
-      local tool = player.Character and player.Character:FindFirstChildOfClass("Tool")
-      if tool then
-         ToolNameLabel:Set("Currently holding: " .. tool.Name)
-      else
-         ToolNameLabel:Set("Currently holding: None")
-      end
-   end
+    while task.wait(0.5) do
+        local tool = game.Players.LocalPlayer.Character and game.Players.LocalPlayer.Character:FindFirstChildOfClass("Tool")
+        ToolNameLabel:Set(tool and "Currently holding: " .. tool.Name or "Currently holding: None")
+    end
 end)
 
--- ⏲ Timer
+-- 🔁 Dupe Button Logic
+local dupeCooldown = false
+local dupeStartTime = 0
+local dupeDuration = 3600
 local timerRunning = false
 
 Tab:CreateButton({
-   Name = "Dupe",
-   Callback = function()
-      if timerRunning then
-         Rayfield:Notify({
-            Title = "Cooldown Active",
-            Content = "You need to wait for 1 hour!",
-            Duration = 5
-         })
-         return
-      end
+    Name = "Dupe",
+    Callback = function()
+        ClickSound:Play()
 
-      timerRunning = true
-      local totalSeconds = 3600 -- 1 hour
+        if timerRunning then
+            local remaining = dupeDuration - (os.time() - dupeStartTime)
+            local mins = math.floor(remaining / 60)
+            local secs = remaining % 60
+            NotifyWithSound({
+                Title = "Cooldown Active",
+                Content = string.format("Wait %02d:%02d before duping again.", mins, secs),
+                Duration = 5
+            })
+            return
+        end
 
-      Rayfield:Notify({
-         Title = "Timer Started",
-         Content = "You must wait 1 hour.",
-         Duration = 4
-      })
+        timerRunning = true
+        dupeStartTime = os.time()
 
-      task.spawn(function()
-         for i = totalSeconds, 0, -1 do
-            local minutes = math.floor(i / 60)
-            local seconds = i % 60
-            TimerLabel:Set("Time remaining: " .. string.format("%02d:%02d", minutes, seconds))
-            task.wait(1)
-         end
+        NotifyWithSound({
+            Title = "Timer Started",
+            Content = "Duplication countdown: 1 hour",
+            Duration = 4
+        })
 
-         game.Players.LocalPlayer:Kick("If it didn't dupe try again")
-      end)
-   end,
+        task.spawn(function()
+            for i = dupeDuration, 0, -1 do
+                local minutes = math.floor(i / 60)
+                local seconds = i % 60
+                local formatted = string.format("Time remaining: %02d:%02d", minutes, seconds)
+                TimerLabel:Set(formatted)
+                task.wait(1)
+            end
+            game.Players.LocalPlayer:Kick("If it didn't dupe, try again")
+        end)
+    end
 })
 
--- ⚙️ Tab 2: Script Tools
+-- 🐾 Age Changer Logic
+Tab:CreateSection("🐾 Age Tools")
+Tab:CreateLabel("Randomize the age of your pet")
+local AgeStatusLabel = Tab:CreateLabel("Current Age: Not yet checked")
+
+local ageCooldown = false
+local ageCooldownTime = 1200
+
+Tab:CreateButton({
+    Name = "Randomize Age in Name",
+    Callback = function()
+        ClickSound:Play()
+
+        if ageCooldown then
+            NotifyWithSound({
+                Title = "Cooldown Active",
+                Content = "Wait 20 minutes before changing age again.",
+                Duration = 4
+            })
+            return
+        end
+
+        local tool = game.Players.LocalPlayer.Character and game.Players.LocalPlayer.Character:FindFirstChildOfClass("Tool")
+        if tool then
+            local newAge = math.random(1, 48)
+            local oldName = tool.Name
+            local newName = oldName:gsub("%[Age%s%d+%]", "[Age " .. newAge .. "]", 1)
+
+            if newName ~= oldName then
+                tool.Name = newName
+                AgeStatusLabel:Set("Current Age: " .. newAge)
+                NotifyWithSound({
+                    Title = "Success",
+                    Content = "Tool age updated to " .. newAge,
+                    Duration = 3
+                })
+
+                ageCooldown = true
+                task.delay(ageCooldownTime, function()
+                    ageCooldown = false
+                    NotifyWithSound({
+                        Title = "Cooldown Ended",
+                        Content = "You can randomize age again.",
+                        Duration = 4
+                    })
+                end)
+            else
+                AgeStatusLabel:Set("Current Age: No [Age #] found")
+                NotifyWithSound({
+                    Title = "Not Found",
+                    Content = "Tool has no [Age #] to change.",
+                    Duration = 3
+                })
+            end
+        else
+            AgeStatusLabel:Set("Current Age: No tool held")
+            NotifyWithSound({
+                Title = "No Tool",
+                Content = "You're not holding any tool.",
+                Duration = 3
+            })
+        end
+    end
+})
+
+-- 🔧 Script Tools Tab
 local ScriptsTab = Window:CreateTab("Script Tools", 9405930424)
 ScriptsTab:CreateLabel("While waiting, you can execute scripts here:")
+ScriptsTab:CreateSection("🔓 Keyless Scripts")
 
 ScriptsTab:CreateButton({
-   Name = "Infinite Yield",
-   Callback = function()
-      loadstring(game:HttpGet('https://raw.githubusercontent.com/EdgeIY/infiniteyield/master/source'))()
-   end,
+    Name = "Infinite Yield",
+    Callback = function()
+        ClickSound:Play()
+        loadstring(game:HttpGet('https://raw.githubusercontent.com/EdgeIY/infiniteyield/master/source'))()
+    end
 })
 
 ScriptsTab:CreateButton({
-   Name = "Speed X Hub (Key)",
-   Callback = function()
-      loadstring(game:HttpGet("https://raw.githubusercontent.com/AhmadV99/Speed-Hub-X/main/Speed%20Hub%20X.lua", true))()
-   end,
+    Name = "No Lag Hub",
+    Callback = function()
+        ClickSound:Play()
+        loadstring(game:HttpGetAsync("https://raw.githubusercontent.com/NoLag-id/No-Lag-HUB/refs/heads/main/Loader/LoaderV2.lua"))()
+    end
 })
 
 ScriptsTab:CreateButton({
-   Name = "No Lag Hub",
-   Callback = function()
-      loadstring(game:HttpGetAsync("https://raw.githubusercontent.com/NoLag-id/No-Lag-HUB/refs/heads/main/Loader/LoaderV2.lua"))()
-   end,
+    Name = "Thunder Z (keyless)",
+    Callback = function()
+        ClickSound:Play()
+        loadstring(game:HttpGet('https://raw.githubusercontent.com/ThundarZ/Welcome/refs/heads/main/Main/GaG/Main.lua'))()
+    end
 })
 
--- Save GUI
+ScriptsTab:CreateSection("🔑 Requires Key")
+ScriptsTab:CreateButton({
+    Name = "Speed X Hub (Key)",
+    Callback = function()
+        ClickSound:Play()
+        loadstring(game:HttpGet("https://raw.githubusercontent.com/AhmadV99/Speed-Hub-X/main/Speed%20Hub%20X.lua", true))()
+    end
+})
+
+-- Load any saved configuration
 Rayfield:LoadConfiguration()
