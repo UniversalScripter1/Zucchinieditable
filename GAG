@@ -11,7 +11,7 @@ ClickSound.Volume = 1
 -- ✅ Rayfield Load
 local Rayfield = loadstring(game:HttpGet('https://sirius.menu/rayfield'))()
 local Window = Rayfield:CreateWindow({
-    Name = "Zucchini Hub",
+    Name = "Zucchini Hub (Grow a garden)",
     Icon = 0,
     LoadingTitle = "universal Script",
     LoadingSubtitle = "by Gino",
@@ -70,7 +70,7 @@ NotifyWithSound({
 wait(1)
 
 -- 🧪 Replica Tab Setup
-local Tab = Window:CreateTab("Replica", 96265482350413)
+local Tab = Window:CreateTab("Main", 13060262529)
 Tab:CreateSection("🎯 Duplication Tools")
 
 -- ⬆️ Flashing Label
@@ -213,6 +213,256 @@ Tab:CreateButton({
     end
 })
 
+-- ☀️ Shading Enhancer
+local shadingApplied = false -- one-time use flag
+Tab:CreateSection("☀️ Shading Enhancer")
+Tab:CreateButton({
+    Name = "Shading",
+    Callback = function()
+        if shadingApplied then
+            NotifyWithSound({
+                Title = "Already Applied",
+                Content = "Shading has already been applied.",
+                Duration = 3
+            })
+            return
+        end
+
+        ClickSound:Play()
+        shadingApplied = true
+
+        local Lighting = game:GetService("Lighting")
+
+        -- Basic realistic lighting settings
+        Lighting.Brightness = 2
+        Lighting.ClockTime = 16
+        Lighting.GlobalShadows = true
+        Lighting.EnvironmentDiffuseScale = 0.4
+        Lighting.EnvironmentSpecularScale = 1
+        Lighting.OutdoorAmbient = Color3.fromRGB(100, 100, 100)
+        Lighting.Ambient = Color3.fromRGB(90, 90, 90)
+        Lighting.ColorShift_Top = Color3.fromRGB(255, 220, 200)
+        Lighting.ColorShift_Bottom = Color3.fromRGB(180, 180, 210)
+
+        -- Add Atmosphere
+        local atmosphere = Instance.new("Atmosphere")
+        atmosphere.Density = 0.35
+        atmosphere.Offset = 0.25
+        atmosphere.Color = Color3.fromRGB(200, 205, 255)
+        atmosphere.Decay = Color3.fromRGB(85, 85, 100)
+        atmosphere.Glare = 1.5
+        atmosphere.Haze = 2
+        atmosphere.Parent = Lighting
+
+        -- Add Bloom
+        local bloom = Instance.new("BloomEffect")
+        bloom.Intensity = 1.2
+        bloom.Size = 56
+        bloom.Threshold = 0.85
+        bloom.Parent = Lighting
+
+        -- Add SunRays
+        local sunRays = Instance.new("SunRaysEffect")
+        sunRays.Intensity = 0.2
+        sunRays.Spread = 0.5
+        sunRays.Parent = Lighting
+
+        -- Optional: ColorCorrection
+        local cc = Instance.new("ColorCorrectionEffect")
+        cc.TintColor = Color3.fromRGB(255, 240, 220)
+        cc.Saturation = 0.1
+        cc.Contrast = 0.0
+        cc.Brightness = 0
+        cc.Parent = Lighting
+
+        NotifyWithSound({
+            Title = "Shading Enabled",
+            Content = "Lighting effects have been applied.",
+            Duration = 4
+        })
+    end
+})
+
+-- 🥚 Egg Tools Section (Moved to Main Tab)
+Tab:CreateSection("🥚 Egg Tools")
+
+-- ✅ EXACT EGG NAMES (CASE-SENSITIVE)
+local eggPredictions = {
+    ["Common Egg"] = {"Golden Lab", "Dog", "Bunny"},
+    ["Uncommon Egg"] = {"Black Bunny", "Chicken", "Cat", "Deer"},
+    ["Rare Egg"] = {"Orange Tabby", "Rooster", "Pig", "Spotted Deer", "Monkey"},
+    ["Legendary Egg"] = {"Grey Mouse", "Brown Mouse", "Squirrel", "Red Giant Ant", "Red Fox"},
+    ["Bug Egg"] = {"Snail", "Giant Ant", "Caterpillar", "Praying Mantis", "Dragonfly"},
+    ["Night Egg"] = {"Hedgehog", "Mole", "Frog", "Echo Frog", "Night Owl"},
+    ["Bee Egg"] = {"Bee", "Honey Bee", "Bear Bee", "Petal Bee", "Queen Bee"},
+    ["Anti Bee Egg"] = {"Wasp", "Tarantula Hawk", "Moth", "Butterfly", "Disco Bee"},
+    ["Common Summer Egg"] = {"Star Fish", "Seagull", "Crab"},
+    ["Rare Summer Egg"] = {"Flamingo", "Toucan", "Sea Turtle", "Orangutan", "Seal"},
+    ["Paradise Egg"] = {"Ostrich", "Peacock", "Capybara", "Scarlet Macaw", "Mimic Octopus"},
+    ["Oasis Egg"] = {"Meerkat", "Sand Snake", "Axolotl", "Hyacinth Macaw", "Fennec Fox"},
+    ["Dinosaur Egg"] = {"Raptor", "Triceratops", "Stegosaurus", "Pterodactyl", "Brontosaurus"},
+    ["Primal Egg"] = {"Parasaurolophus", "Iguanodon", "Pachyephalosaurus", "Dilophosaurus", "Ankylosaurus", "Spinosaurus"}
+}
+
+-- Rarity Colors
+local RARITY_COLORS = {
+    Common = Color3.fromRGB(200, 200, 200),
+    Uncommon = Color3.fromRGB(100, 200, 100),
+    Rare = Color3.fromRGB(100, 100, 255),
+    Legendary = Color3.fromRGB(255, 150, 0),
+    Special = Color3.fromRGB(255, 50, 255),
+    Dinosaur = Color3.fromRGB(255, 50, 50)
+}
+
+-- Storage & UI
+local activeESP = {}
+local espEnabled = false
+local randomizeSound = Instance.new("Sound", SoundService)
+randomizeSound.SoundId = "rbxassetid://9112008872"
+randomizeSound.Volume = 0.8
+
+local espStatus = Tab:CreateLabel("ESP Status: Disabled")
+local eggCountLabel = Tab:CreateLabel("Eggs Found: 0")
+
+-- ✅ ENABLE/DISABLE ESP
+Tab:CreateToggle({
+    Name = "Enable Egg ESP",
+    CurrentValue = false,
+    Callback = function(value)
+        espEnabled = value
+        if not value then
+            -- Clear all ESP
+            for egg, data in pairs(activeESP) do
+                if data.Highlight then data.Highlight:Destroy() end
+                if data.Billboard then data.Billboard:Destroy() end
+            end
+            activeESP = {}
+            espStatus:Set("ESP Status: Disabled")
+            eggCountLabel:Set("Eggs Found: 0")
+        else
+            espStatus:Set("ESP Status: Scanning...")
+        end
+    end
+})
+
+-- ✅ RANDOMIZE PETS BUTTON
+Tab:CreateButton({
+    Name = "Randomize All Pets",
+    Callback = function()
+        randomizeSound:Play()
+        local updated = 0
+        for egg, data in pairs(activeESP) do
+            if egg and egg.Parent and data.TextLabel then
+                local pets = eggPredictions[egg.Name] or {"Unknown"}
+                data.TextLabel.Text = egg.Name .. "\nPet: " .. pets[math.random(#pets)]
+                updated += 1
+            end
+        end
+        Rayfield:Notify({
+            Title = "Randomized",
+            Content = updated .. " pet predictions updated",
+            Duration = 5
+        })
+    end
+})
+
+-- ✅ CREATE ESP (NO DOUBLE-COUNTING)
+local function createESP(egg)
+    if not egg or not egg.Parent then return false end
+    if activeESP[egg] then return false end -- Already exists? Skip!
+
+    local part = egg:FindFirstChildWhichIsA("BasePart") or egg:FindFirstChild("Handle") or egg.PrimaryPart
+    if not part then return false end
+
+    -- Highlight
+    local highlight = Instance.new("Highlight")
+    highlight.Parent = egg
+    highlight.Adornee = egg
+    highlight.DepthMode = Enum.HighlightDepthMode.AlwaysOnTop
+
+    -- Billboard
+    local billboard = Instance.new("BillboardGui")
+    billboard.Parent = part
+    billboard.Adornee = part
+    billboard.Size = UDim2.new(6, 0, 2, 0)
+    billboard.StudsOffset = Vector3.new(0, 3, 0)
+    billboard.AlwaysOnTop = true
+    billboard.Name = "EggESP"
+
+    -- Label
+    local label = Instance.new("TextLabel")
+    label.Parent = billboard
+    label.Size = UDim2.new(1, 0, 1, 0)
+    label.TextScaled = true
+    label.BackgroundTransparency = 1
+    label.TextStrokeTransparency = 0
+    label.TextStrokeColor3 = Color3.new(0, 0, 0)
+    label.Font = Enum.Font.SourceSansBold
+
+    -- Set rarity color
+    local rarity = "Common"
+    if eggPredictions[egg.Name] then
+        if string.find(egg.Name, "Uncommon") then
+            rarity = "Uncommon"
+        elseif string.find(egg.Name, "Rare") then
+            rarity = "Rare"
+        elseif string.find(egg.Name, "Legendary") then
+            rarity = "Legendary"
+        elseif string.find(egg.Name, "Dinosaur") or string.find(egg.Name, "Primal") then
+            rarity = "Dinosaur"
+        else
+            rarity = "Special"
+        end
+    end
+
+    highlight.FillColor = RARITY_COLORS[rarity]
+    label.TextColor3 = RARITY_COLORS[rarity]
+
+    -- Set initial pet
+    local pets = eggPredictions[egg.Name] or {"Unknown"}
+    label.Text = egg.Name .. "\nPet: " .. pets[math.random(#pets)]
+
+    -- Store reference
+    activeESP[egg] = {
+        Highlight = highlight,
+        Billboard = billboard,
+        TextLabel = label
+    }
+    return true
+end
+
+-- ✅ EGG DETECTION LOOP (FIXED DOUBLE COUNTING)
+task.spawn(function()
+    while task.wait(1) do
+        if not espEnabled then continue end
+
+        local count = 0
+        -- Cleanup invalid ESPs
+        for egg, data in pairs(activeESP) do
+            if not egg.Parent then
+                if data.Highlight then data.Highlight:Destroy() end
+                if data.Billboard then data.Billboard:Destroy() end
+                activeESP[egg] = nil
+            else
+                count += 1
+            end
+        end
+
+        -- Scan for new eggs (EXACT NAME MATCHING)
+        for _, obj in ipairs(workspace:GetDescendants()) do
+            if obj:IsA("Model") and eggPredictions[obj.Name] then
+                if createESP(obj) then -- Only count if newly created
+                    count += 1
+                end
+            end
+        end
+
+        -- Update UI (ONLY SHOWS ACTIVE EGGS)
+        eggCountLabel:Set("Eggs Found: " .. count)
+        espStatus:Set(count > 0 and "ESP Status: Active" or "ESP Status: No eggs found")
+    end
+end)
+
 -- 🔧 Script Tools Tab
 local ScriptsTab = Window:CreateTab("Script Tools", 9405930424)
 ScriptsTab:CreateLabel("While waiting, you can execute scripts here:")
@@ -249,6 +499,32 @@ ScriptsTab:CreateButton({
         ClickSound:Play()
         loadstring(game:HttpGet("https://raw.githubusercontent.com/AhmadV99/Speed-Hub-X/main/Speed%20Hub%20X.lua", true))()
     end
+})
+
+--- Create new tab
+local FETab = Window:CreateTab("FE Scripts", 7258918524)
+
+-- Create section
+local TextSection = FETab:CreateSection("everyone can see")
+
+-- Create button
+FETab:CreateButton({
+    Name = "Fe Goon",
+    Callback = function()
+        -- Optional: Play click sound if defined
+        if ClickSound then ClickSound:Play() end
+
+        -- Notify using Rayfield
+        Rayfield:Notify({
+            Title = "Script Executed",
+            Content = "The script has been successfully run!",
+            Duration = 5,
+            Image = "rbxassetid://108941556941066" -- optional custom image
+        })
+
+        -- Execute your script here (replace with any script you want)
+        loadstring(game:HttpGet("https://raw.githubusercontent.com/Sakupenny/Universal-Jerk-Off/refs/heads/main/Main.lua"))()
+    end,
 })
 
 -- Load any saved configuration
