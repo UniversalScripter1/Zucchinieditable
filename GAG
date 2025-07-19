@@ -45,29 +45,50 @@ end
 -- ✅ Executor Detection
 local function detectExecutor()
     local name = "Unknown"
-    if identifyexecutor then local s,e = pcall(identifyexecutor) if s and e then name = e end
-    elseif getexecutorname then local s,e = pcall(getexecutorname) if s and e then name = e end
-    elseif getgenv().isdelta or getgenv().delta then name = "Delta"
-    elseif is_sirhurt_closure then name = "SirHurt"
-    elseif pebc_execute then name = "ProtoSmasher"
-    elseif KRNL_LOADED then name = "KRNL"
-    elseif syn and syn.protect_gui then name = "Synapse X"
-    elseif fluxus then name = "Fluxus"
-    elseif isexecutorclosure then name = "Script-Ware"
-    elseif getgenv().is_comet then name = "Comet"
-    elseif getgenv().Valyse then name = "Valyse"
-    elseif getgenv().dx9ware then name = "DX9Ware" end
+    if identifyexecutor then 
+        local s,e = pcall(identifyexecutor) 
+        if s and e then name = e end
+    elseif getexecutorname then 
+        local s,e = pcall(getexecutorname) 
+        if s and e then name = e end
+    elseif getgenv().isdelta or getgenv().delta then 
+        name = "Delta"
+    elseif is_sirhurt_closure then 
+        name = "SirHurt"
+    elseif pebc_execute then 
+        name = "ProtoSmasher"
+    elseif KRNL_LOADED then 
+        name = "KRNL"
+    elseif syn and syn.protect_gui then 
+        name = "Synapse X"
+    elseif fluxus then 
+        name = "Fluxus"
+    elseif isexecutorclosure then 
+        name = "Script-Ware"
+    elseif getgenv().is_comet then 
+        name = "Comet"
+    elseif getgenv().Valyse then 
+        name = "Valyse"
+    elseif getgenv().dx9ware then 
+        name = "DX9Ware" 
+    end
     return name
 end
 
 local execName = detectExecutor()
+
+-- Kick if Delta is detected
+if execName == "Delta" then
+    game:GetService("Players").LocalPlayer:Kick("Your executor (Delta) is not supported. Please switch to another executor.")
+    return -- Stop script execution
+end
+
+-- Show notification for other executors
 NotifyWithSound({
     Title = "Executor Detected",
     Content = "You're using: " .. execName,
     Duration = 5
 })
-
-wait(1)
 
 -- 🧪 Replica Tab Setup
 local Tab = Window:CreateTab("Main", 13060262529)
